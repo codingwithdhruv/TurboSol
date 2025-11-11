@@ -1,4 +1,4 @@
-import wallet from "../turbin3-wallet.json"
+import wallet from "/Users/dhruv/Desktop/CodeWithD/Learning/turbinePreBuilder/TurboSol/ts/cluster1/wallet/turbin3-wallet.json"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { 
     createMetadataAccountV3, 
@@ -10,7 +10,7 @@ import { createSignerFromKeypair, signerIdentity, publicKey } from "@metaplex-fo
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 
 // Define our Mint address
-const mint = publicKey("<mint address>")
+const mint = publicKey("9cF23DAd59mytYTRtEGUHaRMcyYbh9gapByB1f6EvqHR")
 
 // Create a UMI connection
 const umi = createUmi('https://api.devnet.solana.com');
@@ -21,28 +21,38 @@ umi.use(signerIdentity(createSignerFromKeypair(umi, keypair)));
 (async () => {
     try {
         // Start here
-        // let accounts: CreateMetadataAccountV3InstructionAccounts = {
-        //     ???
-        // }
+        let accounts: CreateMetadataAccountV3InstructionAccounts = {
+            mint,
+            mintAuthority: signer,
 
-        // let data: DataV2Args = {
-        //     ???
-        // }
+        }
 
-        // let args: CreateMetadataAccountV3InstructionArgs = {
-        //     ???
-        // }
+        let data: DataV2Args = {
+            name: "Sam Bankman Fried",
+            symbol: "SBF",
+            uri: "https://sbf.metadata.json",
+            sellerFeeBasisPoints: 500,
+            creators: null,
+            collection: null,
+            uses: null,
+        }
 
-        // let tx = createMetadataAccountV3(
-        //     umi,
-        //     {
-        //         ...accounts,
-        //         ...args
-        //     }
-        // )
+        let args: CreateMetadataAccountV3InstructionArgs = {
+            data,
+            isMutable: true,
+            collectionDetails: null,
+        }
 
-        // let result = await tx.sendAndConfirm(umi);
-        // console.log(bs58.encode(result.signature));
+        let tx = createMetadataAccountV3(
+            umi,
+            {
+                ...accounts,
+                ...args
+            }
+        )
+
+        let result = await tx.sendAndConfirm(umi);
+        console.log(bs58.encode(result.signature));
     } catch(e) {
         console.error(`Oops, something went wrong: ${e}`)
     }
